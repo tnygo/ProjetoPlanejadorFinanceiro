@@ -6,4 +6,5 @@
  *
  */
 module PlanejadorFinanceiro {
+	requires java.sql;
 }

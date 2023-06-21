@@ -18,7 +18,7 @@ public class ModuloDespesasDAO {
 		
 		this.conn = conn;
 	}
-	
+
 	public void cadastrarNovaCategoria(Categoria categoria) throws SQLException {
 		
 		PreparedStatement st = null;
@@ -37,38 +37,7 @@ public class ModuloDespesasDAO {
 			BancoDados.desconectar();
 		}
 	}
-	
-	public List<Categoria> buscarCategoria() throws SQLException{
-		
-		PreparedStatement st = null;
-		ResultSet rs = null;
-		
-		try {
-			
-			st = conn.prepareStatement("Select * from categoria order by id");
-			
-			rs = st.executeQuery();
-			
-			List<Categoria> listaCategoria = new ArrayList<>();
-			
-			while (rs.next()) {
-				
-				Categoria categoria = new Categoria();
-				categoria.setCategoria_id(rs.getInt("id"));
-				categoria.setCategoria(rs.getString("categoria"));
-				
-				listaCategoria.add(categoria);
-			}
-			
-			return listaCategoria;
-			
-		} finally {
-			
-			BancoDados.finalizarStatement(st);
-			BancoDados.finalizarResultSet(rs);
-			BancoDados.desconectar();
-		}
-	}
+
 	public void editarCategoria(Categoria categoria) throws SQLException {
 		
 		PreparedStatement st = null;
@@ -169,6 +138,72 @@ public class ModuloDespesasDAO {
 		} finally {
 			
 			BancoDados.finalizarStatement(st);
+			BancoDados.desconectar();
+		}
+	}
+	
+	public List<Categoria> buscarCategoria() throws SQLException{
+		
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		
+		try {
+			
+			st = conn.prepareStatement("Select * from categoria order by id");
+			
+			rs = st.executeQuery();
+			
+			List<Categoria> listaCategoria = new ArrayList<>();
+			
+			while (rs.next()) {
+				
+				Categoria categoria = new Categoria();
+				categoria.setCategoria_id(rs.getInt("id"));
+				categoria.setCategoria(rs.getString("categoria"));
+				
+				listaCategoria.add(categoria);
+			}
+			
+			return listaCategoria;
+			
+		} finally {
+			
+			BancoDados.finalizarStatement(st);
+			BancoDados.finalizarResultSet(rs);
+			BancoDados.desconectar();
+		}
+	}
+	public List<Despesa> buscarDespesa() throws SQLException {
+
+		PreparedStatement st = null;
+		ResultSet rs = null;
+		
+		try {
+			
+			st = conn.prepareStatement("Select * from despesas order by despesa_id");
+			
+			rs = st.executeQuery();
+			
+			List<Despesa> listaDespesa = new ArrayList<>();
+			
+			while(rs.next()) {
+				
+				Despesa despesa = new Despesa();
+				despesa.setDespesa_id(rs.getInt("despesa_id"));
+				despesa.setDespesa(rs.getString("despesa"));
+				despesa.setValorMensal(rs.getDouble("mensal"));
+				despesa.setValorOcasional(rs.getDouble("ocasional"));
+				
+				listaDespesa.add(despesa);
+				
+			}
+			
+			return listaDespesa;
+			
+		} finally {
+			
+			BancoDados.finalizarStatement(st);
+			BancoDados.finalizarResultSet(rs);
 			BancoDados.desconectar();
 		}
 	}

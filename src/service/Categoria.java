@@ -3,12 +3,11 @@ package service;
 public class Categoria {
 
 	private int categoria_id;
+	private String categoria;
+	
 	public void setCategoria_id(int categoria_id) {
 		this.categoria_id = categoria_id;
 	}
-
-	private String categoria;
-
 	
 	public Categoria() {
 		
@@ -29,6 +28,11 @@ public class Categoria {
 
 	public int getCategoria_id() {
 		return categoria_id;
+	}
+
+	@Override
+	public String toString() {
+		return this.getCategoria();
 	}
 	
 	

@@ -62,6 +62,7 @@ public class ModuloDespesasDAOTeste {
 		despesa.setCategoria(categoria);
 		despesa.setDespesa("Combustível");
 		despesa.setValorMensal(800);
+		despesa.setValorOcasional(0);
 		despesa.setValorTotal(800*12);
 		
 		Connection conn = BancoDados.conectar();
@@ -75,6 +76,7 @@ public class ModuloDespesasDAOTeste {
 			Despesa despesa = new Despesa();
 			despesa.setDespesa("IPVA");
 			despesa.setDespesa_id(1);
+			despesa.setCategoria_id(2);
 			despesa.setValorMensal(900);
 			despesa.setValorOcasional(1);
 			despesa.setValorTotal(11000);
@@ -100,7 +102,7 @@ public class ModuloDespesasDAOTeste {
 		
 		try {
 			
-			ModuloDespesasDAOTeste.excluirDespesa();
+			ModuloDespesasDAOTeste.cadastrarNovaCategoria();
 			
 		} catch (SQLException | IOException e) {
 			

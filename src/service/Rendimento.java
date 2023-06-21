@@ -3,6 +3,7 @@ package service;
 public class Rendimento {
 
 	private int categoria_id;
+	private Categoria categoria;
 	private int rendimento_id;
 	private String rendimento;
 	private double valorMensal;
@@ -70,7 +71,19 @@ public class Rendimento {
 	public void setValorTotal(double totalAno) {
 		ValorTotal = totalAno;
 	}
-	
+
+	public Categoria getCategoria() {
+		return categoria;
+	}
+
+	public void setCategoria(Categoria categoria) {
+		this.categoria = categoria;
+	}
+
+	@Override
+	public String toString() {
+		return getRendimento();
+	}
 	
 	
 }

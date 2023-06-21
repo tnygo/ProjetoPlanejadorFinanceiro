@@ -2,21 +2,22 @@ package service;
 
 public class Despesa {
 
-	private int despesa_id;
 	private int categoria_id;
 	private Categoria categoria;
+	private int despesa_id;
 	private String despesa;
 	private double valorMensal;
 	private double valorOcasional;
 	private double valorTotal;
 	
-	public Despesa(Categoria categoria, String despesa, double valorMensal, double valorOcasional, double valorTotal) {
+	public Despesa(Categoria categoria, String despesa, double valorMensal, double valorOcasional, double valorTotal, int categoria_id) {
 
 		this.categoria = categoria;
 		this.despesa = despesa;
 		this.valorMensal = valorMensal;
 		this.valorOcasional = valorOcasional;
 		this.valorTotal = valorTotal;
+		this.categoria_id = categoria_id;
 	}
 
 	public Despesa() {
@@ -77,6 +78,11 @@ public class Despesa {
 
 	public void setValorTotal(double valorTotal) {
 		this.valorTotal = valorTotal;
+	}
+
+	@Override
+	public String toString() {
+		return getDespesa();
 	}
 	
 	

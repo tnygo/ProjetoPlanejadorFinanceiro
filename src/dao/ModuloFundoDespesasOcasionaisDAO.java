@@ -101,7 +101,7 @@ public class ModuloFundoDespesasOcasionaisDAO {
 			fundoOcasional.setFundoOcasional_id(rs.getInt("fundo_ocasional_id"));
 			fundoOcasional.setFundoOcasional(rs.getString("fundo_ocasional"));
 			fundoOcasional.setValorMensal(rs.getDouble("mensal"));
-			fundoOcasional.setFundoOcasional(rs.getString("ocasional"));
+			fundoOcasional.setValorOcasional(rs.getDouble("ocasional"));
 			
 			listafundoOcasional.add(fundoOcasional);
 		}

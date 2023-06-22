@@ -167,13 +167,13 @@ public class ModuloResumoWindow extends JFrame {
 		scrollPane.setViewportView(tableaAnual);
 		tableaAnual.setModel(new DefaultTableModel(
 			new Object[][] {
-				{null, null, null, null},
-				{null, null, null, null},
-				{null, null, null, null},
-				{null, null, null, null},
-				{null, null, null, null},
-				{null, null, null, null},
-				{null, null, null, null},
+				{"Rendimento", null, null, null},
+				{"Investimento a Longo Prazo", null, null, null},
+				{"Fundo para despesas Ocasionais", null, null, null},
+				{"Total Dispon\u00EDvel para Despesas Durante o Ano", null, null, null},
+				{"Total Despesas Mensais Or\u00E7adas (12 anos)", null, null, null},
+				{"Total Despesas Ocasionais para o Ano", null, null, null},
+				{"Valor Total", null, null, null},
 			},
 			new String[] {
 				"Descri\u00E7\u00E3o", "Mensal (x12)", "Ocasional", "Total Anual"
@@ -194,9 +194,9 @@ public class ModuloResumoWindow extends JFrame {
 		lblMensal = new JLabel("Selecione o mês");
 		lblMensal.setBounds(45, 33, 98, 13);
 		contentPane.add(lblMensal);
-		String[] opcoes = {"1 - Janeiro", "2 - Fevereiro", "3 - Março", "4 - Abril", "5 - Maio", "6 - Junho", "7 - Julho", "8 - Agosto", "9 - Setembro", "10 - Outubro", "11 - Novembro", "12 - Dezembro"};
+		String[] mes = {"1 - Janeiro", "2 - Fevereiro", "3 - Março", "4 - Abril", "5 - Maio", "6 - Junho", "7 - Julho", "8 - Agosto", "9 - Setembro", "10 - Outubro", "11 - Novembro", "12 - Dezembro"};
 		
-		comboBoxMes = new JComboBox(opcoes);
+		comboBoxMes = new JComboBox(mes);
 		comboBoxMes.setBounds(157, 29, 109, 21);
 		contentPane.add(comboBoxMes);
 		
@@ -205,8 +205,8 @@ public class ModuloResumoWindow extends JFrame {
 		lblSelecioneOAno.setBounds(45, 209, 98, 13);
 		contentPane.add(lblSelecioneOAno);
 		
-		
-		comboBox_1 = new JComboBox();
+		String[] ano = {"2023"};
+		comboBox_1 = new JComboBox(ano);
 		comboBox_1.setBounds(157, 209, 109, 21);
 		contentPane.add(comboBox_1);
 		
@@ -227,10 +227,80 @@ public class ModuloResumoWindow extends JFrame {
 		JButton btnAnualConfirma = new JButton("Procurar");
 		btnAnualConfirma.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				try {
+					buscarResumoAno();
+				} catch (SQLException | IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 		});
 		btnAnualConfirma.setBounds(276, 209, 85, 21);
 		contentPane.add(btnAnualConfirma);
+	}
+
+	protected void buscarResumoAno() throws SQLException, IOException {
+		
+		DefaultTableModel modeloAno = (DefaultTableModel) tableaAnual.getModel();
+		
+		double valorRendimentoMensal = 0.0;
+		double valorRendimentoOcasional = 0.0;
+		double valorInvestimentoMensal = 0.0;
+		double valorInvestimentoOcasional = 0.0;
+		double valorDespesasOcasionais = 0.0;
+		double valorDespesasMensais = 0.0;
+		double valorDespesasocasionais = 0.0;
+		
+		
+		List<Rendimento> listaRendimento = moduloRendimento.buscarRendimento();
+		List<Investimento> listaInvestimento = moduloInvestimentoLongoPrazo.buscarInvestimentos();
+		List<FundoOcasional> listaDespesaOcasional = moduloFundoDespesasOcasionais.buscarFundos();
+		List<Despesa> listaDespesas = moduloDespesas.buscarDespesa();
+		
+		for (Rendimento rendimento : listaRendimento) {
+			
+			valorRendimentoMensal += rendimento.getValorMensal();
+			valorRendimentoOcasional += rendimento.getValorOcasional();
+		}
+		
+		for (Investimento investimento : listaInvestimento) {
+			
+			valorInvestimentoMensal += investimento.getValorMensal();
+			valorInvestimentoOcasional += investimento.getValorOcasional();
+		}
+		
+		for (FundoOcasional fundoOcasional : listaDespesaOcasional) {
+			
+			valorDespesasOcasionais += fundoOcasional.getValorMensal();
+			valorDespesasOcasionais += fundoOcasional.getValorOcasional();
+		}
+		
+		for (Despesa despesa : listaDespesas) {
+			
+			valorDespesasMensais += despesa.getValorMensal();
+			valorDespesasocasionais += despesa.getValorOcasional();
+		}
+		
+		double totalDespesas = (valorRendimentoMensal*12)+ valorRendimentoOcasional - (valorInvestimentoMensal*12)+valorInvestimentoOcasional;
+		double totalRestante = totalDespesas - valorDespesasMensais - valorDespesasocasionais;		
+		
+		modeloAno.setValueAt(valorRendimentoMensal*12, 0, 1);
+		modeloAno.setValueAt(valorRendimentoOcasional, 0, 2);
+		modeloAno.setValueAt((valorRendimentoMensal*12)+valorRendimentoOcasional, 0, 3);
+		
+		modeloAno.setValueAt(valorInvestimentoMensal*12, 1, 1);
+		modeloAno.setValueAt(valorInvestimentoOcasional, 1, 2);
+		modeloAno.setValueAt((valorInvestimentoMensal*12)+valorInvestimentoOcasional, 1, 3);
+		
+		modeloAno.setValueAt(valorDespesasOcasionais, 2, 1);
+		modeloAno.setValueAt(valorDespesasOcasionais, 2, 3);
+		
+		modeloAno.setValueAt(totalDespesas, 3, 3);
+		
+		modeloAno.setValueAt(valorDespesasMensais, 4, 3);
+		modeloAno.setValueAt(valorDespesasocasionais, 5, 3);
+		modeloAno.setValueAt(totalRestante, 6, 3);
+		
 	}
 
 	protected void buscarResumoMes() throws SQLException, IOException {
@@ -239,8 +309,16 @@ public class ModuloResumoWindow extends JFrame {
 		modeloMes.fireTableDataChanged();
 		
 		double valorRendimento = 0.0;
+		double valorInvestimento = 0.0;
+		double valorDespesasOcasionais = 0.0;
+		double valorDespesas = 0.0;
+		double valorDisponivelDespesas = 0.0;
+		double valorTotal = 0.0;
 		
 		List<Rendimento> listaRendimento = moduloRendimento.buscarRendimento();
+		List<Investimento> listaInvestimento = moduloInvestimentoLongoPrazo.buscarInvestimentos();	
+		List<FundoOcasional> listaDespesaOcasional = moduloFundoDespesasOcasionais.buscarFundos();
+		List<Despesa> listaDespesas = moduloDespesas.buscarDespesa();
 		
 		for (Rendimento rendimento : listaRendimento) {
 			
@@ -248,38 +326,23 @@ public class ModuloResumoWindow extends JFrame {
 			valorRendimento += rendimento.getValorOcasional();
 		}
 		
-		double valorInvestimento = 0.0;
-		
-		List<Investimento> listaInvestimento = moduloInvestimentoLongoPrazo.buscarInvestimentos();	
-		
 		for (Investimento investimento : listaInvestimento) {
 			
 			valorInvestimento += investimento.getValorMensal();
 			valorInvestimento += investimento.getValorOcasional();
 		}
 		
-		double valorDespesasOcasionais = 0.0;
-		
-		List<FundoOcasional> listaDespesaOcasional = moduloFundoDespesasOcasionais.buscarFundos();
-		
 		for (FundoOcasional fundoOcasional : listaDespesaOcasional) {
 			
 			valorDespesasOcasionais += fundoOcasional.getValorMensal();
 			valorDespesasOcasionais += fundoOcasional.getValorOcasional();
 		}
-		
-		double valorDespesas = 0.0;
-		
-		List<Despesa> listaDespesas = moduloDespesas.buscarDespesa();
-		
+
 		for (Despesa despesa : listaDespesas) {
 			
 			valorDespesas += despesa.getValorMensal();
 			valorDespesas += despesa.getValorOcasional();
 		}
-		
-		double valorDisponivelDespesas = 0.0;
-		double valorTotal = 0.0;
 		
 		valorDisponivelDespesas += (valorRendimento - valorInvestimento - valorDespesasOcasionais);
 		valorTotal += (valorDisponivelDespesas - valorDespesas);
@@ -292,12 +355,4 @@ public class ModuloResumoWindow extends JFrame {
 		modeloMes.setValueAt(valorTotal, 5, 1);
 	}	
 	
-	protected void buscarResumoAno() throws SQLException, IOException {
-		
-		DefaultTableModel modeloAno = (DefaultTableModel) tableaAnual.getModel();
-		modeloAno.fireTableDataChanged();
-		modeloAno.setRowCount(0);
-		
-		
-	}
 }
